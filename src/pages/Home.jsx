@@ -23,6 +23,9 @@ const Home = () => {
   // const data = useContext(DiaryStateContext);
   const data = useSelector((state) => state.diary);
   const [pivotDate, setPivotDate] = useState(new Date());
+  const [currentPage, setCurrentPage] = useState(1);
+  const perPage = 5;
+
 
   const monthlyData = getMonthlyData(pivotDate, data);
   usePageTilte("감정 일기장");
@@ -43,7 +46,7 @@ const Home = () => {
         rightChild={<Button onClick={onIncreaseMonth} text={">"} />}
       />
       <TestHello />
-      <DiaryList data = {monthlyData} />
+        <DiaryList data = {monthlyData} />
     </div>
   );
 };

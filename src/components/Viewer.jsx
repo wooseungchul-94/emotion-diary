@@ -3,7 +3,6 @@ import { getEmotionImage } from "../util/get-emotion-image";
 import { emotionList } from "../util/constants";
 
 const Viewer = ({ emotionId, content }) => {
-  console.log("viewer.jsx 체크 emotionId , content", emotionId, content);
   const emotionItem = emotionList.find(
     (item) => String(item.emotionId) === String(emotionId)
   );

@@ -4,12 +4,6 @@ import Button from "./Button";
 import "./DiaryItem.css";
 
 const DiaryItem = ({ id, emotionId, createdDate, content }) => {
-  console.log("diaryItem.jsx start");
-  console.log(id);
-  console.log(emotionId);
-  console.log(createdDate);
-  console.log(content);
-  console.log("diaryItem.jsx end");
   const nav = useNavigate();
 
   const goDiaryPage = () => {
