@@ -14,6 +14,7 @@ const DiaryList = ({data}) => {
   
   const onChangSortType = (e) => {
     setSortType(e.target.value);
+    setCurrentPage(1); 
   }
   
   const getSortedDate = () => {
@@ -48,8 +49,7 @@ const DiaryList = ({data}) => {
         <Button onClick={()=>nav("/new")} text={"새 일기 쓰기"} type={"POSITIVE"} />
       </div>
       <div className="list_wrapper">
-        {sortedData.map((item) => (
-          // <DiaryItem data = {diary} />
+        {pagedList.map((item) => (
           <DiaryItem key={item.id} {...item} />
         ))}
         {/* {sortedData.map((item)=> <DiaryItem key={item.id} {...item}/>)} */}
