@@ -5,6 +5,9 @@ const diarySlice = createSlice({
   name: 'diary',
   initialState: [],
   reducers: {
+    initDiary: (state, action) => {
+      return action.payload;
+    },
     createDiary: (state, action) => {
       const { createdDate, emotionId, content } = action.payload;
       state.unshift({
@@ -31,5 +34,5 @@ const diarySlice = createSlice({
   },
 });
 
-export const { createDiary, updateDiary, deleteDiary } = diarySlice.actions;
+export const { initDiary, createDiary, updateDiary, deleteDiary } = diarySlice.actions;
 export default diarySlice.reducer;

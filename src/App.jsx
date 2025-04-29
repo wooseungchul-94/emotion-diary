@@ -13,10 +13,12 @@ import Edit from "./pages/Edit";
 import Notfound from "./pages/Notfound";
 import Button from "./components/Button";
 import Header from "./components/Header";
-import { Provider } from "react-redux";
-import { store } from "./store/store";
+import { Provider, useDispatch } from "react-redux";
+// import { store } from "./store/store";
+import { initDiary } from "./store/diarySlice"
 
 import { getEmotionImage } from "./util/get-emotion-image";
+import { fetchDiaryList } from "./api/diary";
 
  
 function reducer(state, action) {
@@ -56,71 +58,87 @@ export const DiaryDispatchContext = createContext();
 function App() {
 
   const [isLoading, setIsLoading] = useState(true);
-  const [data, dispatch] = useReducer(reducer, []);
   const idRef = useRef(0);
+  // const [data, dispatch] = useReducer(reducer, []);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const storedData = localStorage.getItem("diary");
-    if(!storedData){
-      setIsLoading(false);
-      return ;
-    }
-    const parsedData = JSON.parse(storedData);
-
-    if(!Array.isArray(parsedData)){
-      setIsLoading(false);
-      return ;
-    }
-
-    let maxId = 0;
-    parsedData.forEach((item)=> {
-      if(Number(item.id) > maxId){
-        maxId = Number(item.id)
+    const loadData = async () => {
+      try {
+        const data = await fetchDiaryList();
+        dispatch(initDiary(data));
+      } catch(err) {
+        console.error("일기 데이터 로딩 실패", err);
       }
-    });
+    };
 
-    idRef.current = maxId+1;
-
-    dispatch({
-      type: "INIT",
-      data: parsedData,
-    })
-    setIsLoading(false);
-  },[])
+    loadData();
+  }, []);
 
 
-  const onCreate = (createdDate, emotionId, content) => {
-    dispatch({
-      type: "CREATE",
-      data: {
-        id: idRef.current++,
-        createdDate,
-        emotionId,
-        content,
-      },
-    });
-  };
+  // useEffect(() => {
+  //   const storedData = localStorage.getItem("diary");
+  //   if(!storedData){
+  //     setIsLoading(false);
+  //     return ;
+  //   }
+  //   const parsedData = JSON.parse(storedData);
 
-  // 기존 일기 수정
-  const onUpdate = (id, createdDate, emotionId, content) => {
-    dispatch({
-      type: "UPDATE",
-      data: {
-        id,
-        createdDate,
-        emotionId,
-        content,
-      },
-    });
-  };
+  //   if(!Array.isArray(parsedData)){
+  //     setIsLoading(false);
+  //     return ;
+  //   }
 
-  // 삭제
-  const onDelete = (id) =>{
-    dispatch({
-      type:"DELETE",
-      id,
-    });
-  };
+  //   let maxId = 0;
+  //   parsedData.forEach((item)=> {
+  //     if(Number(item.id) > maxId){
+  //       maxId = Number(item.id)
+  //     }
+  //   });
+
+  //   idRef.current = maxId+1;
+
+  //   dispatch({
+  //     type: "INIT",
+  //     data: parsedData,
+  //   })
+  //   setIsLoading(false);
+  // },[])
+
+
+  // const onCreate = (createdDate, emotionId, content) => {
+  //   dispatch({
+  //     type: "CREATE",
+  //     data: {
+  //       id: idRef.current++,
+  //       createdDate,
+  //       emotionId,
+  //       content,
+  //     },
+  //   });
+  // };
+
+  // // 기존 일기 수정
+  // const onUpdate = (id, createdDate, emotionId, content) => {
+  //   dispatch({
+  //     type: "UPDATE",
+  //     data: {
+  //       id,
+  //       createdDate,
+  //       emotionId,
+  //       content,
+  //     },
+  //   });
+  // };
+
+  // // 삭제
+  // const onDelete = (id) =>{
+  //   dispatch({
+  //     type:"DELETE",
+  //     id,
+  //   });
+  // };
 
   if(isLoading){
     return <div>데이터가 로딩중입니다요.</div>
@@ -128,7 +146,7 @@ function App() {
 
   return (
     <>
-      <Provider store={store}>  
+      {/* <Provider store={store}>   */}
         {/* <DiaryStateContext.Provider value={data}> */}
           {/* <DiaryDispatchContext.Provider value={{onCreate,onUpdate,onDelete}}> */}
             <Routes>
@@ -140,7 +158,7 @@ function App() {
             </Routes>
           {/* </DiaryDispatchContext.Provider> */}
         {/* </DiaryStateContext.Provider> */}
-      </Provider>
+      {/* </Provider> */}
     </>
   );
 }
