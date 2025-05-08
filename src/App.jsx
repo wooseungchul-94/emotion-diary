@@ -19,6 +19,7 @@ import { initDiary } from "./store/diarySlice"
 
 import { getEmotionImage } from "./util/get-emotion-image";
 import { fetchDiaryList } from "./api/diary";
+import SignaturePad from "./components/SignaturePad";
 
  
 function reducer(state, action) {
@@ -60,6 +61,12 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const idRef = useRef(0);
   // const [data, dispatch] = useReducer(reducer, []);
+  // const [showSignature, setShowSignature] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
+  // const toggleSignaturePad = () => {
+  //   setShowSignature(prev => !prev); 
+  // }
 
   const dispatch = useDispatch();
 
@@ -140,12 +147,29 @@ function App() {
   //   });
   // };
 
-  if(isLoading){
-    return <div>데이터가 로딩중입니다요.</div>
-  }
+  // if(isLoading){
+  //   return <div>데이터가 로딩중입니다요.</div>
+  // }
 
   return (
     <>
+      <div style={{ padding: 20 }}>
+        <button onClick={() => setShowModal(true)}>서명창 열기</button>
+
+        {showModal && (
+          <div style={modalOverlayStyle}>
+            <div style={modalStyle}>
+              <SignaturePad />
+              <button
+                onClick={() => setShowModal(false)}
+                style={{ marginTop: 10 }}
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
       {/* <Provider store={store}>   */}
         {/* <DiaryStateContext.Provider value={data}> */}
           {/* <DiaryDispatchContext.Provider value={{onCreate,onUpdate,onDelete}}> */}
@@ -164,3 +188,24 @@ function App() {
 }
 
 export default App;
+
+// 간단한 모달 스타일
+const modalOverlayStyle = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100vw",
+  height: "100vh",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  zIndex: 999,
+};
+
+const modalStyle = {
+  backgroundColor: "#fff",
+  padding: 20,
+  borderRadius: 8,
+  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+};
