@@ -3,13 +3,11 @@ import Button from "../components/Button";
 import Editor from "../components/Editor";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
-import { DiaryDispatchContext } from "../App";
 import usePageTilte from "../hooks/usePageTitle";
 import { useDispatch } from "react-redux";
 import { createDiary } from "../store/diarySlice";
 
 const New = () => {
-  // const { onCreate } = useContext(DiaryDispatchContext);
   const dispatch = useDispatch();
 
   const nav = useNavigate();

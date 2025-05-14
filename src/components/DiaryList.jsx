@@ -18,7 +18,7 @@ const DiaryList = ({data}) => {
   }
   
   const getSortedDate = () => {
-    return data.toSorted((a,b) => {
+    return [...data].sort((a, b) => {
       if(sortType === "oldest") {
         return a.createdDate - b.createdDate;
       } else {
@@ -52,7 +52,6 @@ const DiaryList = ({data}) => {
         {pagedList.map((item) => (
           <DiaryItem key={item.id} {...item} />
         ))}
-        {/* {sortedData.map((item)=> <DiaryItem key={item.id} {...item}/>)} */}
       </div>
       <Pagination 
         currentPage={currentPage}

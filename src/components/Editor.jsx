@@ -22,6 +22,7 @@ const Editor = ({ initData, onSubmit }) => {
       setInput({
         ...initData,
         createdDate: new Date(Number(initData.createdDate)),
+        emotionId: Number(initData.emotionId),
       });
     };
 

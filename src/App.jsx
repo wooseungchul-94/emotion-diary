@@ -49,107 +49,32 @@ function reducer(state, action) {
       return state;
   }
 
-  localStorage.setItem("diary",JSON.stringify(nextState));
+  // localStorage.setItem("diary",JSON.stringify(nextState));
   return nextState;
 }
 
-export const DiaryStateContext = createContext();
-export const DiaryDispatchContext = createContext();
- 
 function App() {
 
-  const [isLoading, setIsLoading] = useState(true);
-  const idRef = useRef(0);
-  // const [data, dispatch] = useReducer(reducer, []);
-  // const [showSignature, setShowSignature] = useState(false);
   const [showModal, setShowModal] = useState(false);
-
-  // const toggleSignaturePad = () => {
-  //   setShowSignature(prev => !prev); 
-  // }
-
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const data = await fetchDiaryList();
-        dispatch(initDiary(data));
-      } catch(err) {
-        console.error("일기 데이터 로딩 실패", err);
+        const res = await fetchDiaryList();
+        dispatch(initDiary(res.data.diaryList));
+      } catch (err) {
+        console.error("데이터 로딩 실패", err);
+      } finally {
+        setIsLoading(false);
       }
     };
-
     loadData();
-  }, []);
+  }, [dispatch]);
 
-
-  // useEffect(() => {
-  //   const storedData = localStorage.getItem("diary");
-  //   if(!storedData){
-  //     setIsLoading(false);
-  //     return ;
-  //   }
-  //   const parsedData = JSON.parse(storedData);
-
-  //   if(!Array.isArray(parsedData)){
-  //     setIsLoading(false);
-  //     return ;
-  //   }
-
-  //   let maxId = 0;
-  //   parsedData.forEach((item)=> {
-  //     if(Number(item.id) > maxId){
-  //       maxId = Number(item.id)
-  //     }
-  //   });
-
-  //   idRef.current = maxId+1;
-
-  //   dispatch({
-  //     type: "INIT",
-  //     data: parsedData,
-  //   })
-  //   setIsLoading(false);
-  // },[])
-
-
-  // const onCreate = (createdDate, emotionId, content) => {
-  //   dispatch({
-  //     type: "CREATE",
-  //     data: {
-  //       id: idRef.current++,
-  //       createdDate,
-  //       emotionId,
-  //       content,
-  //     },
-  //   });
-  // };
-
-  // // 기존 일기 수정
-  // const onUpdate = (id, createdDate, emotionId, content) => {
-  //   dispatch({
-  //     type: "UPDATE",
-  //     data: {
-  //       id,
-  //       createdDate,
-  //       emotionId,
-  //       content,
-  //     },
-  //   });
-  // };
-
-  // // 삭제
-  // const onDelete = (id) =>{
-  //   dispatch({
-  //     type:"DELETE",
-  //     id,
-  //   });
-  // };
-
-  // if(isLoading){
-  //   return <div>데이터가 로딩중입니다요.</div>
-  // }
+  if (isLoading) return <div>로딩중입니다...</div>;
 
   return (
     <>
@@ -170,19 +95,13 @@ function App() {
           </div>
         )}
       </div>
-      {/* <Provider store={store}>   */}
-        {/* <DiaryStateContext.Provider value={data}> */}
-          {/* <DiaryDispatchContext.Provider value={{onCreate,onUpdate,onDelete}}> */}
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/new" element={<New />} />
-              <Route path="/diary/:id" element={<Diary />} />
-              <Route path="/edit/:id" element={<Edit />} />
-              <Route path="*" element={<Notfound />} />
-            </Routes>
-          {/* </DiaryDispatchContext.Provider> */}
-        {/* </DiaryStateContext.Provider> */}
-      {/* </Provider> */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/new" element={<New />} />
+        <Route path="/diary/:id" element={<Diary />} />
+        <Route path="/edit/:id" element={<Edit />} />
+        <Route path="*" element={<Notfound />} />
+      </Routes>
     </>
   );
 }
