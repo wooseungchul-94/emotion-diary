@@ -6,6 +6,7 @@ import { useContext, useEffect } from "react";
 import usePageTilte from "../hooks/usePageTitle";
 import { useDispatch } from "react-redux";
 import { createDiary } from "../store/diarySlice";
+import { createDiaryApi } from "../api/diary";
 
 const New = () => {
   const dispatch = useDispatch();
@@ -14,20 +15,22 @@ const New = () => {
 
   usePageTilte("새 일기 쓰기");
 
-  const onSubmit = (input) => {
-    // onCreate(
-    //   input.createdDate.getTime(),
-    //   input.emotionId,
-    //   input.content
-    // );
-    dispatch(createDiary({
-        createdDate: input.createdDate.getTime(),
-        emotionId: input.emotionId,
-        content: input.content
-    }))
+const onSubmit = async (input) => {
+  try {
+    const response = await createDiaryApi({
+      createDate: input.createdDate.getTime(),
+      emotionId: input.emotionId,
+      content: input.content
+    });
+
+    dispatch(createDiary(response)); 
 
     nav("/", { replace: true });
-  };
+  } catch (err) {
+    alert("일기 저장 실패");
+    console.error(err);
+  }
+};
 
   return (
     <div>
