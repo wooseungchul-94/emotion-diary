@@ -6,6 +6,7 @@ import UseDiary from "../hooks/useDiary";
 import usePageTilte from "../hooks/usePageTitle";
 import { useDispatch } from "react-redux";
 import { deleteDiary, updateDiary } from "../store/diarySlice";
+import { updateDiaryApi, deleteDiaryApi } from "../api/diary";
 
 const Edit = () => {
   const params = useParams();
@@ -18,29 +19,52 @@ const Edit = () => {
   usePageTilte(`${params.id}번 일기 수정`);
   
   
-  const onClickDelete = () => {
-    if (
-      window.confirm("일기를 정말 삭제할까요? 다시 복구되지 않아요!")
-    ) {
-      // 일기 삭제 로직
-      dispatch(deleteDiary(params.id));
-      nav("/", { replace: true });
-      
+  
+  // const onClickDelete2 = () => {
+    //   if (
+      //     window.confirm("일기를 정말 삭제할까요? 다시 복구되지 않아요!")
+      //   ) {
+        //     // 일기 삭제 로직
+        //     dispatch(deleteDiary(params.id));
+        //     nav("/", { replace: true });
+        
+        //   }
+        // };
+
+  const onClickDelete = async () => {
+    if (window.confirm("일기를 정말 삭제할까요? 다시 복구되지 않아요!")) {
+      try {
+        const response = await deleteDiaryApi({
+          id: params.id,
+        });
+    
+        dispatch(deleteDiary(response)); 
+    
+        nav("/", { replace: true });
+      } catch (err) {
+        alert("일기 삭제 실패");
+        console.error(err);
+      }
     }
   };
 
-  const onSubmit = (input) => {
+  const onSubmit = async (input) => {
     if (window.confirm("일기를 정말 수정할까요?")) {
-      dispatch(
-        updateDiary({
-        id: params.id,
-        createdDate: input.createdDate.getTime(),
-        emotionId: input.emotionId,
-        content: input.content 
-        })
-      );
-
-      nav("/", { replace: true });
+      try {
+        const response = await updateDiaryApi({
+          id: params.id,
+          createDate: input.createdDate.getTime(),
+          emotionId: input.emotionId,
+          content: input.content
+        });
+    
+        dispatch(updateDiary(response)); 
+    
+        nav("/", { replace: true });
+      } catch (err) {
+        alert("일기 수정 실패");
+        console.error(err);
+      }
     }
   };
 
